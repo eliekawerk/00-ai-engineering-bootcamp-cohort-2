@@ -20,4 +20,5 @@ dependencies = [
     "qdrant-client>=1.15.1",
     "langsmith>=0.4.34",
     "langgraph>=0.6.10",
+    "ragas>=0.3.6",
 ]

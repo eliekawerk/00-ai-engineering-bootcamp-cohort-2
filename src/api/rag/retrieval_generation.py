@@ -104,8 +104,8 @@ def generate_answer(prompt):
 @traceable(
     name="rag-pipeline"
 )
-def rag_pipeline(question, topk=5) -> dict:
-    qdrant_client_ = QdrantClient(url="http://qdrant:6333")
+def rag_pipeline(question, qdrant_client_, topk=5) -> dict:
+    qdrant_client_ = qdrant_client_ or QdrantClient(url="http://qdrant:6333")
     retrieved_context = retrieve_data(question, qdrant_client_, topk)
     preprocessed_context = process_context(retrieved_context)
     prompt = build_prompt(preprocessed_context, question)
