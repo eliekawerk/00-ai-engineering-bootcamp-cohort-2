@@ -209,3 +209,5 @@ __marimo__/
 
 # data files
 data/
+qdrant_storage/*
+.DS_Store

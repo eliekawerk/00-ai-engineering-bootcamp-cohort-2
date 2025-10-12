@@ -15,4 +15,9 @@ dependencies = [
     "pandas==2.2.3",
     "fastapi>=0.118.0",
     "uvicorn>=0.37.0",
+    "ipython>=9.6.0",
+    "matplotlib>=3.10.7",
+    "qdrant-client>=1.15.1",
+    "langsmith>=0.4.34",
+    "langgraph>=0.6.10",
 ]
