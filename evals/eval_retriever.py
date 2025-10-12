@@ -29,28 +29,23 @@ async def ragas_faithfulness(run, example):
     return await scorer.single_turn_ascore(sample)
 
 async def ragas_responce_relevancy(run, example):
-
     sample = SingleTurnSample(
         user_input=run["question"],
         response=run["answer"],
         retrieved_contexts=run["retrieved_context"]
     )
     scorer = ResponseRelevancy(llm=ragas_llm, embeddings=ragas_embeddings)
-
     return await scorer.single_turn_ascore(sample)    
 
 async def ragas_context_precision_id_based(run, example):
-
     sample = SingleTurnSample(
         retrieved_context_ids=run["retrieved_context_ids"],
         reference_context_ids=example["reference_context_ids"]
     )
     scorer = IDBasedContextPrecision()
-
     return await scorer.single_turn_ascore(sample)    
 
 async def ragas_context_recall_id_based(run, example):
-
     sample = SingleTurnSample(
             retrieved_context_ids=run["retrieved_context_ids"],
             reference_context_ids=example["reference_context_ids"]
