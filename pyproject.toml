@@ -23,4 +23,6 @@ dependencies = [
     "ragas>=0.3.6",
     "ruff>=0.14.1",
     "instructor>=1.11.3",
+    "isort>=7.0.0",
+    "pre-commit>=4.3.0",
 ]

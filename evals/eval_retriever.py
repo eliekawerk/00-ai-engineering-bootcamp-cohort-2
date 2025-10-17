@@ -1,19 +1,16 @@
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langsmith import Client
 from qdrant_client import QdrantClient
-from ragas.llms import LangchainLLMWrapper
-from ragas.embeddings import LangchainEmbeddingsWrapper
-
 from ragas.dataset_schema import SingleTurnSample
+from ragas.embeddings import LangchainEmbeddingsWrapper
+from ragas.llms import LangchainLLMWrapper
 from ragas.metrics import (
+    Faithfulness,
     IDBasedContextPrecision,
     IDBasedContextRecall,
-    Faithfulness,
     ResponseRelevancy,
 )
 
-from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAIEmbeddings
-
-from langsmith import Client
 from src.api.rag.retrieval_generation import rag_pipeline
 
 ragas_llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4.1-mini"))

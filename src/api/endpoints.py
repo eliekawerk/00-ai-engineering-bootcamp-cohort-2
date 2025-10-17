@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Request
 import logging
+
+from fastapi import APIRouter, Request
 
 from src.api.models import RAGRequest, RAGResponse
 from src.api.rag.retrieval_generation import rag_pipeline

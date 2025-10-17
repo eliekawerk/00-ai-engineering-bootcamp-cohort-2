@@ -1,12 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-
-from src.api.core.config import config
-from src.api.endpoints import api_router
-from src.api.middleware import RequestIDMiddleware
-
 import logging
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from src.api.endpoints import api_router
+from src.api.middleware import RequestIDMiddleware
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

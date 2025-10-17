@@ -2,8 +2,8 @@ from typing import Optional
 
 import instructor
 import openai
+from langsmith import get_current_run_tree, traceable
 from qdrant_client import QdrantClient
-from langsmith import traceable, get_current_run_tree
 
 from src.api.rag.rag_models import RAGGenerationResponse
 

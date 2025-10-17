@@ -1,6 +1,5 @@
-import streamlit as st
 import requests
-
+import streamlit as st
 from core.config import config
 
 ## Lets create a sidebar with a dropdown for the model list and providers

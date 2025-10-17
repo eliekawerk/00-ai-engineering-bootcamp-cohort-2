@@ -1,8 +1,8 @@
+import logging
+import uuid
+
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-import uuid
-import logging
-
 
 logger = logging.getLogger(__name__)
 
