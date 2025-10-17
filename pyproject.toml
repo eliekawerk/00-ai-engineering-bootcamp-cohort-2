@@ -21,4 +21,6 @@ dependencies = [
     "langsmith>=0.4.34",
     "langgraph>=0.6.10",
     "ragas>=0.3.6",
+    "ruff>=0.14.1",
+    "instructor>=1.11.3",
 ]

@@ -7,7 +7,7 @@ from core.config import config
 with st.sidebar:
     st.title("Settings")
 
-    #Dropdown for model
+    # Dropdown for model
     provider = st.selectbox("Provider", ["OpenAI", "Groq", "Google"])
     if provider == "OpenAI":
         model_name = st.selectbox("Model", ["gpt-4o-mini", "gpt-4o"])
@@ -22,7 +22,6 @@ with st.sidebar:
 
 
 def api_call(method, url, **kwargs):
-
     def _show_error_popup(message):
         """Show error message as a popup in the top-right corner."""
         st.session_state["error_popup"] = {
@@ -55,7 +54,9 @@ def api_call(method, url, **kwargs):
 
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "Hello! How can I assist you today?"}]
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hello! How can I assist you today?"}
+    ]
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
