@@ -25,4 +25,6 @@ dependencies = [
     "instructor>=1.11.3",
     "isort>=7.0.0",
     "pre-commit>=4.3.0",
+    "fastembed>=0.7.3",
+    "cohere>=5.19.0",
 ]
