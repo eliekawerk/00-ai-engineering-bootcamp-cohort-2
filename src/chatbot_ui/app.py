@@ -1,7 +1,8 @@
+import logging
+
 import requests
 import streamlit as st
 from core.config import config
-import logging
 
 logger = logging.getLogger(__name__)
 

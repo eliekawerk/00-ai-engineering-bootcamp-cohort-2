@@ -6,17 +6,16 @@ import openai
 from langsmith import get_current_run_tree, traceable
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
-    Filter,
-    MatchValue,
-    FieldCondition,
-    FusionQuery,
     Document,
+    FieldCondition,
+    Filter,
+    FusionQuery,
+    MatchValue,
     Prefetch,
 )
 
 from src.api.rag.rag_models import RAGGenerationResponseWithReferences
 from src.api.rag.utils.prompt_management import prompt_template_config
-
 
 COLLECTION = "Amazon-items-collection-01-hybrid-search"
 

@@ -1,11 +1,10 @@
 import logging
 
 from fastapi import APIRouter, Request
+from pydantic import ValidationError
 
 from src.api.models import RAGRequest, RAGResponse, RAGUsedContextResponse
 from src.api.rag.retrieval_generation import rag_pipeline_wrapper
-
-from pydantic import ValidationError
 
 logger = logging.getLogger(__name__)
 
