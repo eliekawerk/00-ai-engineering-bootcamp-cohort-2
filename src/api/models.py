@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-class RAGRequest(BaseModel):
+class AgentRequest(BaseModel):
     query: str = Field(..., description="The query to be used in the rag pipeline")
 
 
@@ -13,7 +13,7 @@ class RAGUsedContextResponse(BaseModel):
     description: str = Field(..., description="Description of the item")
 
 
-class RAGResponse(BaseModel):
+class AgentResponse(BaseModel):
     request_id: str = Field(..., description="Request id")
     answer: str = Field(..., description="The answer to the query")
     used_context: List[RAGUsedContextResponse] = Field(
