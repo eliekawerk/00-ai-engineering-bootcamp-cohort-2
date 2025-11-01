@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 class AgentRequest(BaseModel):
     query: str = Field(..., description="The query to be used in the rag pipeline")
+    thread_id: str = Field(..., description="Pesistent memory")
 
 
 class RAGUsedContextResponse(BaseModel):

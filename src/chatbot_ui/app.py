@@ -3,6 +3,7 @@ import logging
 import requests
 import streamlit as st
 from core.config import config
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +12,16 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+
+def get_session_id():
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())
+    return st.session_state.session_id
+
+
+session_id = get_session_id()
+
 
 ## Lets create a sidebar with a dropdown for the model list and providers
 with st.sidebar:
@@ -97,7 +108,9 @@ if prompt := st.chat_input("Hello! How can I assist you today?"):
 
     with st.chat_message("assistant"):
         status, output = api_call(
-            "post", f"{config.API_URL}/rag", json={"query": prompt}
+            "post",
+            f"{config.API_URL}/rag",
+            json={"query": prompt, "thread_id": session_id},
         )
         answer = output["answer"]
         used_context = output["used_context"]

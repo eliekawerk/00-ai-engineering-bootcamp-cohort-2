@@ -13,7 +13,7 @@ rag_router = APIRouter()
 
 @rag_router.post("/")
 def rag(request: Request, payload: AgentRequest) -> AgentResponse:
-    answer = run_agent_wrapper(payload.query)
+    answer = run_agent_wrapper(payload.query, payload.thread_id)
     for context in answer["used_context"]:
         print(context)
     try:
