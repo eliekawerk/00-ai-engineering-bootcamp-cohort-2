@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -20,3 +20,20 @@ class AgentResponse(BaseModel):
     used_context: List[RAGUsedContextResponse] = Field(
         ..., description="Information about items used to answer the query"
     )
+
+
+class FeedbackRequest(BaseModel):
+    feedback_score: Union[int, None] = Field(
+        ..., description="1 if the feedback is positive, 0 if the feedback is negative"
+    )
+    feedback_text: str = Field(..., description="The feedback text")
+    trace_id: str = Field(..., description="The trace ID")
+    thread_id: str = Field(..., description="The thread ID")
+    feedback_source_type: str = Field(
+        ..., description="The type of feedback. Human or API"
+    )
+
+
+class FeedbackResponse(BaseModel):
+    request_id: str = Field(..., description="The request ID")
+    status: str = Field(..., description="The status of the feedback submission")

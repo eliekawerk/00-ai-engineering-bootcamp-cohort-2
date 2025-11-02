@@ -211,5 +211,5 @@ __marimo__/
 data/
 qdrant_storage/*
 .DS_Store
-postgres_data/*
+postgres-data/*
 postgres-data/pgdata/*

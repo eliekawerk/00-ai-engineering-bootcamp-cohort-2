@@ -112,7 +112,13 @@ def intent_router_node(state):
     if current_run:
         current_run.metadata["usage_metadata"] = {
             "input_tokens": raw_response.usage.prompt_tokens,
+            "output_tokens": raw_response.usage.completion_tokens,
             "total_tokens": raw_response.usage.total_tokens,
         }
+        trace_id = str(getattr(current_run, "trace_id", current_run.id))
 
-    return {"question_relevant": response.question_relevant, "answer": response.answer}
+    return {
+        "question_relevant": response.question_relevant,
+        "answer": response.answer,
+        "trace_id": trace_id,
+    }
