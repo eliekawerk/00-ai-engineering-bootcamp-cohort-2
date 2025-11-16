@@ -1,6 +1,9 @@
 from typing import List
 
 from langsmith import traceable, get_current_run_tree
+import numpy as np
+import psycopg
+from psycopg.rows import dict_row
 import openai
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -10,6 +13,7 @@ from qdrant_client.models import (
     Filter,
     FieldCondition,
     MatchAny,
+    MatchValue,
 )
 
 
@@ -177,3 +181,194 @@ def get_formatted_reviews_context(
     formatted_context = process_reviews_context(context)
 
     return formatted_context
+
+
+@traceable(name="add_to_shopping_cart", run_type="tool")
+def add_to_shopping_cart(items: list[dict], user_id: str, cart_id: str) -> str:
+    """Add a list of provided items to the shopping cart.
+
+    Args:
+        items: A list of items to add to the shopping cart. Each item is a dictionary with the following keys: product_id, quantity.
+        user_id: The id of the user to add the items to the shopping cart.
+        cart_id: The id of the shopping cart to add the items to.
+
+    Returns:
+        A list of the items added to the shopping cart.
+    """
+
+    conn = psycopg.connect(
+        host="postgres",
+        port=5432,
+        dbname="langgraph_db",
+        user="langgraph_user",
+        password="langgraph_password",
+        autocommit=True,
+    )
+
+    with conn.cursor(row_factory=dict_row) as cursor:
+        for item in items:
+            product_id = item["product_id"]
+            quantity = item["quantity"]
+
+            qdrant_client = QdrantClient(url="http://qdrant:6333")
+
+            dummy_vector = np.zeros(1536).tolist()
+            payload = (
+                qdrant_client.query_points(
+                    collection_name="Amazon-items-collection-01-hybrid-search",
+                    prefetch=[
+                        Prefetch(
+                            query=dummy_vector,
+                            filter=Filter(
+                                must=[
+                                    FieldCondition(
+                                        key="parent_asin",
+                                        match=MatchValue(value=product_id),
+                                    )
+                                ]
+                            ),
+                            using="text-embedding-3-small",
+                            limit=20,
+                        )
+                    ],
+                    query=FusionQuery(fusion="rrf"),
+                    limit=1,
+                )
+                .points[0]
+                .payload
+            )
+
+            product_image_url = payload.get("image")
+            price = payload.get("price")
+            currency = "USD"
+
+            # Check if item already exists
+            check_query = """
+                SELECT id, quantity, price 
+                FROM shopping_carts.shopping_cart_items 
+                WHERE user_id = %s AND shopping_cart_id = %s AND product_id = %s
+            """
+            cursor.execute(check_query, (user_id, cart_id, product_id))
+            existing_item = cursor.fetchone()
+
+            if existing_item:
+                # Update existing item
+                new_quantity = existing_item["quantity"] + quantity
+
+                update_query = """
+                    UPDATE shopping_carts.shopping_cart_items 
+                    SET 
+                        quantity = %s,
+                        price = %s,
+                        currency = %s,
+                        product_image_url = COALESCE(%s, product_image_url)
+                    WHERE user_id = %s AND shopping_cart_id = %s AND product_id = %s
+                    RETURNING id, quantity, price
+                """
+
+                cursor.execute(
+                    update_query,
+                    (
+                        new_quantity,
+                        price,
+                        currency,
+                        product_image_url,
+                        user_id,
+                        cart_id,
+                        product_id,
+                    ),
+                )
+
+            else:
+                # Insert new item
+                insert_query = """
+                    INSERT INTO shopping_carts.shopping_cart_items (
+                        user_id, shopping_cart_id, product_id,
+                        price, quantity, currency, product_image_url
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id, quantity, price
+                """
+
+                cursor.execute(
+                    insert_query,
+                    (
+                        user_id,
+                        cart_id,
+                        product_id,
+                        price,
+                        quantity,
+                        currency,
+                        product_image_url,
+                    ),
+                )
+
+    return f"Added {items} to the shopping cart."
+
+
+@traceable(name="get_shopping_cart", run_type="tool")
+def get_shopping_cart(user_id: str, cart_id: str) -> list[dict]:
+    """
+    Retrieve all items in a user's shopping cart.
+
+    Args:
+        user_id: User ID
+        cart_id: Cart identifier
+
+    Returns:
+        List of dictionaries containing cart items
+    """
+    conn = psycopg.connect(
+        host="postgres",
+        port=5432,
+        dbname="langgraph_db",
+        user="langgraph_user",
+        password="langgraph_password",
+        autocommit=True,
+    )
+    with conn.cursor(row_factory=dict_row) as cursor:
+        query = """
+            select 
+                product_id, price, quantity,
+                currency, product_image_url, 
+                (price * quantity) as total_price
+            from 
+                shopping_carts.shopping_cart_items
+            where 
+                user_id = %s and shopping_cart_id = %s 
+            order by added_at desc
+        """
+        cursor.execute(query, (user_id, cart_id))
+        return [dict(row) for row in cursor.fetchall()]
+
+
+@traceable(name="remove_from_shopping_cart", run_type="tool")
+def remove_from_cart(product_id: str, user_id: str, cart_id: str) -> str:
+    """
+    Remove an item completely from the shopping cart.
+
+    Args:
+        user_id: User ID
+        product_id: Product ID to remove
+        cart_id: Cart identifier
+
+    Returns:
+        True if item was removed, False if item wasn't found
+    """
+
+    conn = psycopg.connect(
+        host="postgres",
+        port=5432,
+        dbname="langgraph_db",
+        user="langgraph_user",
+        password="langgraph_password",
+        autocommit=True,
+    )
+
+    with conn.cursor(row_factory=dict_row) as cursor:
+        query = """
+                DELETE FROM shopping_carts.shopping_cart_items
+                WHERE user_id = %s AND shopping_cart_id = %s AND product_id = %s
+            """
+        cursor.execute(query, (user_id, cart_id, product_id))
+
+        return cursor.rowcount > 0
