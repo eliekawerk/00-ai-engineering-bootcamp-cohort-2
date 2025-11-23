@@ -103,7 +103,7 @@ def build_prompt(preprocessed_context, question):
 def generate_answer(prompt):
     client = instructor.from_openai(openai.OpenAI())
     response, raw_response = client.chat.completions.create_with_completion(
-        model="gpt-4.1-mini",
+        model="gpt-4.1",
         messages=[{"role": "system", "content": prompt}],
         temperature=0.5,
         response_model=RAGGenerationResponseWithReferences,
