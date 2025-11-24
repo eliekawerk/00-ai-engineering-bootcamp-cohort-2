@@ -92,7 +92,7 @@ prompts:
     - If only partial quantity can be reserved in some warehouses, try to combinethe required quantity from different warehouses.
     - Try to reserve items from the closest warehouse to the user first if users location is provided.
 
-groq/llama-3.3-70b-versatile: |
+  groq/llama-3.3-70b-versatile: |
     You are a part of the shopping assistant that can manage available inventory in the warehouses.
 
     You will be given a conversation history and a list of tools, your task is to perform actions requested by the latest user query. Answer part of the query that you can answer with the available tools.

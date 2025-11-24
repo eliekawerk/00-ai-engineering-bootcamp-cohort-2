@@ -78,7 +78,7 @@ prompts:
     - The short description should have the name of the item.
     - If the user's request requires using a tool, set tool_calls with the appropriate function names and arguments.    
 
-groq/llama-3.3-70b-versatile: |
+  groq/llama-3.3-70b-versatile: |
     You are a shopping assistant that can answer questions about the products in stock.
 
     You will be given a conversation history and a list of tools you can use to answer the latest query. Answer part of the query that you can answer with the available tools.

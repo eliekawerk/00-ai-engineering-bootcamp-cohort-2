@@ -43,7 +43,7 @@ prompts:
     - Never set final_answer to true if the plan is not complete.
     - You should output the next_agent field as well as the plan field.
 
-groq/llama-3.3-70b-versatile: |
+  groq/llama-3.3-70b-versatile: |
 
     You are a Coordinator Agent as part of a shopping assistant.
 

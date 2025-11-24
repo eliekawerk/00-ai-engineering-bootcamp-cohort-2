@@ -27,7 +27,7 @@ prompts:
     Question:
     {{ question }}  
 
-groq/llama-3.3-70b-versatile: |
+  groq/llama-3.3-70b-versatile: |
     You are a shopping assistant that can answer questions about the products in stock.
 
     You will be given a question and a list of context.

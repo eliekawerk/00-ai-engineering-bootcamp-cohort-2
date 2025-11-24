@@ -279,6 +279,7 @@ def intent_router_node(
             continue
 
     current_run = get_current_run_tree()
+    trace_id = None
     if current_run:
         current_run.metadata["usage_metadata"] = {
             "input_tokens": raw_response.usage.prompt_tokens,
@@ -338,6 +339,7 @@ def coordinator_agent(
             continue
 
     current_run = get_current_run_tree()
+    trace_id = None
     if current_run:
         current_run.metadata["usage_metadata"] = {
             "input_tokens": raw_response.usage.prompt_tokens,
